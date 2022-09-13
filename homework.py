@@ -104,12 +104,13 @@ def main():
             homework = check_response(response)
             if len(homework) > 0:
                 message = parse_status(homework[0])
+                send_message(bot, message)
             current_timestamp = int(time.time())
         except Exception as error:
             logging.error(f'Сбой в работе программы: {error}')
             message = f'Сбой в работе программы: {error}'
-        else:
             send_message(bot, message)
+        else:
             time.sleep(RETRY_TIME)
 
 
