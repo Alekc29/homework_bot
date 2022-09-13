@@ -102,7 +102,8 @@ def main():
         try:
             response = get_api_answer(current_timestamp)
             homework = check_response(response)
-            message = parse_status(homework[0])
+            if len(homework) > 0:
+                message = parse_status(homework[0])
             current_timestamp = int(time.time())
         except Exception as error:
             logging.error(f'Сбой в работе программы: {error}')
