@@ -25,10 +25,6 @@ HOMEWORK_STATUSES = {
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
 
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO)
-
 
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат.
@@ -53,17 +49,20 @@ def get_api_answer(current_timestamp):
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     logging.info('Активирована get_api_answer.')
-    homework_statuses = requests.get(
-        ENDPOINT,
-        headers=HEADERS,
-        params=params
-    )
-    if homework_statuses.status_code == HTTPStatus.OK:
-        logging.info('Запрос данных пройзведён.')
-        return homework_statuses.json()
-    raise exceptions.RequestsError(
-        f'Ошибка сервера: {ENDPOINT}, auth: {HEADERS}'
-    )
+    try:
+        homework_statuses = requests.get(
+            ENDPOINT,
+            headers=HEADERS,
+            params=params
+        )
+        if homework_statuses.status_code == HTTPStatus.OK:
+            logging.info('Запрос данных пройзведён.')
+            return homework_statuses.json()
+        raise exceptions.RequestsError(
+            f'Ошибка сервера: {ENDPOINT}, auth: {HEADERS}'
+        )
+    except Exception as error:
+        raise f'неизвестная ошибка: {error}'
 
 
 def check_response(response):
@@ -81,6 +80,8 @@ def check_response(response):
         raise KeyError('Ключа homeworks в словаре нету.')
     if type(response['homeworks']) == list and len(response['homeworks']) > 0:
         return response['homeworks']
+    elif len(response['homeworks']) == 0:
+        raise KeyError(f'Новых работ не обнаружено.')
     raise KeyError(f'{response["homeworks"]} некорректный список.')
 
 
@@ -114,6 +115,10 @@ def check_tokens():
 
 def main():
     """Основная логика работы бота."""
+    logging.basicConfig(
+        format='%(asctime)s - %(levelname)s - %(message)s - %(lineno)s',
+        level=logging.INFO
+    )
     if not check_tokens():
         TOKEN_error = []
         if not PRACTICUM_TOKEN:
