@@ -46,9 +46,9 @@
 В консоле импортируем токены для ЯндексюПрактикум и для Телеграмм:
 
 ```
-export PRACTICUM_TOKEN=<PRACTICUM_TOKEN>
-export TELEGRAM_TOKEN=<TELEGRAM_TOKEN>
-export CHAT_ID=<CHAT_ID> 
+export PRACT_TOKEN=<PRACTICUM_TOKEN>
+export TELEGA_TOKEN=<TELEGRAM_TOKEN>
+export TELEGA_ID_TOKEN=<CHAT_ID> 
 ```
 
  Запускаем бота:
